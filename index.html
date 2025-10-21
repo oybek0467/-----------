@@ -308,14 +308,16 @@
   </div>
 
   <!-- Login Overlay -->
-  <div id="loginOverlay">
-    <div class="login-box">
-      <h2>Admin Panelga kirish</h2>
-      <input id="loginPassword" type="password" placeholder="Parolni kiriting">
-      <button id="loginSubmit">Kirish</button>
-      <p id="loginError" style="color:#e74c3c; margin-top:10px; min-height:18px;"></p>
-    </div>
+<div id="loginOverlay">
+  <div class="login-box">
+    <h2>Admin Panelga kirish</h2>
+    <input id="loginName" type="text" placeholder="Loginni kiriting">
+    <input id="loginPassword" type="password" placeholder="Parolni kiriting">
+    <button id="loginSubmit">Kirish</button>
+    <p id="loginError" style="color:#e74c3c; margin-top:10px; min-height:18px;"></p>
   </div>
+</div>
+
 
   <script>
     // Sidebar ochib-yopish
@@ -334,64 +336,62 @@
     }
   </script>
 
-  <script>
-  (function(){
-    const STORAGE_KEY = 'adminLoggedIn_v1';
-    const overlay = document.getElementById('loginOverlay');
-    const pw = document.getElementById('loginPassword');
-    const btn = document.getElementById('loginSubmit');
-    const err = document.getElementById('loginError');
-    const correct = 'admin';
+<script>
+(function(){
+  const STORAGE_KEY = 'adminLoggedIn_v2';
+  const overlay = document.getElementById('loginOverlay');
+  const nameInput = document.getElementById('loginName');
+  const pwInput = document.getElementById('loginPassword');
+  const btn = document.getElementById('loginSubmit');
+  const err = document.getElementById('loginError');
 
-    // Agar localStorage da flag bo'lsa — overlay ni yashiramiz
-    if (localStorage.getItem(STORAGE_KEY) === '1') {
-      if (overlay) overlay.style.display = 'none';
+  const correctLogin = 'oybek';
+  const correctPassword = 'admin';
+
+  // Agar allaqachon login qilingan bo'lsa, overlay yashirin
+  if (localStorage.getItem(STORAGE_KEY) === '1') {
+    overlay.style.display = 'none';
+  } else {
+    nameInput.focus();
+  }
+
+  // Kirish tugmasi bosilganda
+  btn.addEventListener('click', () => {
+    const login = nameInput.value.trim().toLowerCase();
+    const pass = pwInput.value.trim();
+
+    if (login === correctLogin && pass === correctPassword) {
+      localStorage.setItem(STORAGE_KEY, '1');
+      overlay.style.display = 'none';
     } else {
-      // overlay mavjud bo'lsa fokusni inputga qo'yamiz
-      if (overlay && pw) {
-        window.addEventListener('load', () => pw.focus());
-      }
+      err.textContent = '❌ Login yoki parol noto‘g‘ri.';
+      pwInput.value = '';
+      pwInput.focus();
     }
+  });
 
-    // Login ishlashi
-    if (btn && pw) {
-      pw.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') btn.click();
-      });
-
-      btn.addEventListener('click', () => {
-        if (pw.value === correct) {
-          localStorage.setItem(STORAGE_KEY, '1');
-          if (overlay) overlay.style.display = 'none';
-        } else {
-          if (err) err.textContent = '❌ Parol notoʻgʻri. Qaytadan urinib koʻring.';
-          pw.value = '';
-          pw.focus();
-        }
-      });
-    }
-
-    // Logout — har qanday 'Chiqish' matnli link yoki class="logout" bo'lsa ishlaydi
-    const logoutLinks = Array.from(document.querySelectorAll('a')).filter(a => {
-      const t = (a.textContent || '').trim().toLowerCase();
-      return a.classList.contains('logout') || t === 'chiqish' || t === 'chiqish';
+  // Enter bilan kirish
+  [nameInput, pwInput].forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') btn.click();
     });
+  });
 
-    logoutLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        // logout bo'lsa flagni o'chiramiz va overlay ni ko'rsatamiz
-        localStorage.removeItem(STORAGE_KEY);
-        if (overlay) {
-          overlay.style.display = 'flex';
-          if (pw) pw.focus();
-        }
-        // agar link boshqa sahifaga olib ketmasligini xohlasangiz e.preventDefault();
-        // e.g. e.preventDefault();
-      });
+  // Logout funksiyasi (chiqish tugmasi uchun)
+  const logoutLinks = document.querySelectorAll('a.logout, a[data-logout]');
+  logoutLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      overlay.style.display = 'flex';
+      nameInput.value = '';
+      pwInput.value = '';
+      err.textContent = '';
+      nameInput.focus();
     });
+  });
+})();
+</script>
 
-    // Eslatma: agar sizda bir nechta sahifa bo'lsa (non.html, salatlar.html),
-    // shu skriptni har bir sahifaga qo'shing yoki uni tashqi login.js qilib include qiling.
   })();
   localStorage.removeItem('adminLoggedIn_v1');
 
