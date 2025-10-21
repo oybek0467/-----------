@@ -6,6 +6,7 @@
   <title>Restoran Admin Panel</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
+    /* === Umumiy dizayn === */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -30,10 +31,7 @@
       height: 100vh;
       overflow-y: auto;
       transition: transform 0.3s ease;
-    }
-
-    .sidebar.active {
-      transform: translateX(-260px);
+      z-index: 1000;
     }
 
     .sidebar h2 {
@@ -63,7 +61,7 @@
       color: #dff6ff;
     }
 
-    /* === Main content === */
+    /* === Asosiy kontent === */
     .main-content {
       margin-left: 270px;
       flex: 1;
@@ -71,7 +69,7 @@
       transition: margin-left 0.3s ease;
     }
 
-    /* === Header Box === */
+    /* === Header (oq maydon) === */
     header {
       background: white;
       padding: 15px 25px;
@@ -86,6 +84,7 @@
     header h1 {
       margin: 0;
       color: #333;
+      font-size: 20px;
     }
 
     header input {
@@ -102,52 +101,7 @@
       color: #0077ff;
     }
 
-    /* === Form === */
-    .form-section {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-    }
-
-    .form-section h2 {
-      text-align: center;
-      color: #0077ff;
-      margin-bottom: 20px;
-    }
-
-    .add-form label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
-
-    .add-form input, .add-form select, .add-form textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-top: 5px;
-    }
-
-    .add-form button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background: #0077ff;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .add-form button:hover {
-      background: #005ed1;
-    }
-
-    /* === Cards === */
+    /* === Kartalar === */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -172,24 +126,46 @@
       margin-bottom: 10px;
     }
 
-    .card a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* === Responsive === */
+    /* === Responsiv holat (telefonlar uchun) === */
     @media (max-width: 768px) {
       .sidebar {
         transform: translateX(-260px);
       }
+
       .sidebar.active {
         transform: translateX(0);
       }
+
+      .main-content {
+        margin-left: 0;
+        padding: 15px;
+      }
+
+      header {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      header h1 {
+        display: none; /* telefonda yashirinadi */
+      }
+
+      header input {
+        width: 150px;
+        font-size: 14px;
+      }
+
       .menu-btn {
         display: block;
       }
-      .main-content {
-        margin-left: 0;
+
+      /* Sidebar fon orqa tomondan yopish effekti */
+      body.active::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 999;
       }
     }
   </style>
@@ -202,52 +178,47 @@
       <h2><i class="fa-solid fa-utensils"></i> Restoran Panel</h2>
       <ul>
         <li><a href="./index.html"><i class="fa-solid fa-house"></i> Bosh sahifa</a></li>
-        <li><a href="./ovqatlar.html  "><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a></li>
+        <li><a href="./ovqatlar.html"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a></li>
       </ul>
     </aside>
 
-    <!-- Main content -->
+    <!-- Asosiy kontent -->
     <main class="main-content">
       <header>
-        <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+        <div class="menu-btn" id="menuBtn">
+          <i class="fa-solid fa-bars"></i>
+        </div>
         <h1>Xush kelibsiz, Admin!</h1>
         <input type="text" placeholder=" Qidiruv...">
       </header>
 
-      <!-- Form -->
-      <section class="form-section">
-        <h2>Qo'shilgan maxsulotlar</h2>
-        
-          </select>
-
-          
-        
-      </section>
-
-      <!-- Statistikalar -->
       <section class="cards">
-        
-       
-        <div class="card"><a href="#"><h3><i class="fa-solid fa-bowl-food"></i> Ovqatlar</h3><p>15 ta</p></a></div>
+        <div class="card">
+          <h3><i class="fa-solid fa-bowl-food"></i> Ovqatlar</h3>
+          <p>15 ta</p>
+        </div>
       </section>
     </main>
   </div>
 
   <script>
-    // Sidebar ochib-yopish
+    // === Sidebarni ochish va yopish ===
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
+    const body = document.body;
+
     menuBtn.addEventListener('click', () => {
       sidebar.classList.toggle('active');
+      body.classList.toggle('active');
     });
 
+    // Sidebar tashqarisiga bosganda yopish
     document.addEventListener('click', (e) => {
       if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
         sidebar.classList.remove('active');
+        body.classList.remove('active');
       }
     });
   </script>
 </body>
 </html>
-
-

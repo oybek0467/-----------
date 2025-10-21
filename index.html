@@ -321,53 +321,46 @@
     // Sidebar ochib-yopish
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
-    menuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
+    if (menuBtn && sidebar) {
+      menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
 
-    document.addEventListener('click', (e) => {
-      if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-        sidebar.classList.remove('active');
-      }
-    });
-
-   
+      document.addEventListener('click', (e) => {
+        if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+          sidebar.classList.remove('active');
+        }
+      });
+    }
   </script>
+
   <script>
   (function(){
-    // Qaysi saqlash turini ishlatamiz:
-    // - sessionStorage: brauzer oynasi yopilganda flag yo'qoladi
-    // - localStorage: uzoq muddat saqlanadi (yopib ochganda ham qoladi)
-    // Bu yerda localStorage ishlatamiz:
     const STORAGE_KEY = 'adminLoggedIn_v1';
+    const overlay = document.getElementById('loginOverlay');
+    const pw = document.getElementById('loginPassword');
+    const btn = document.getElementById('loginSubmit');
+    const err = document.getElementById('loginError');
+    const correct = 'admin';
 
-    // DOM elementlar (agar mavjud bo'lsa)
-    const overlay = document.getElementById('loginOverlay'); // agar overlay bor bo'lsa
-    const pw = document.getElementById('loginPassword');     // parol input (agar bor bo'lsa)
-    const btn = document.getElementById('loginSubmit');      // kirish tugmasi (agar bor bo'lsa)
-    const err = document.getElementById('loginError');       // xato maydoni (agar bor bo'lsa)
-    const correct = 'admin'; // parol (siz xohlasangiz o'zgartiring)
-
-    // Agar localStorage da flag bo'lsa — overlay ni yashiramiz (agar overlay mavjud bo'lsa)
+    // Agar localStorage da flag bo'lsa — overlay ni yashiramiz
     if (localStorage.getItem(STORAGE_KEY) === '1') {
       if (overlay) overlay.style.display = 'none';
     } else {
-      // Agar flag yo'q va overlay mavjud bo'lsa, fokusni inputga qo'yish
+      // overlay mavjud bo'lsa fokusni inputga qo'yamiz
       if (overlay && pw) {
         window.addEventListener('load', () => pw.focus());
       }
     }
 
-    // Agar login elementlari mavjud bo'lsa — login funktsiyasini bog'laymiz
+    // Login ishlashi
     if (btn && pw) {
-      // Enter bilan kirish
       pw.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') btn.click();
       });
 
       btn.addEventListener('click', () => {
         if (pw.value === correct) {
-          // Muvaffaqiyatli kirish — flag o'rnatamiz va overlay ni yashiramiz
           localStorage.setItem(STORAGE_KEY, '1');
           if (overlay) overlay.style.display = 'none';
         } else {
@@ -378,28 +371,34 @@
       });
     }
 
-    // --- OPTIONAL: Logout tugmasi yasalishi ---
-    // Agar sahifada "Chiqish" linki mavjud bo'lsa (masalan sidebar da), unga logout funksiyasini ulang:
-    const logoutLinks = document.querySelectorAll('a.logout, a[data-logout]');
+    // Logout — har qanday 'Chiqish' matnli link yoki class="logout" bo'lsa ishlaydi
+    const logoutLinks = Array.from(document.querySelectorAll('a')).filter(a => {
+      const t = (a.textContent || '').trim().toLowerCase();
+      return a.classList.contains('logout') || t === 'chiqish' || t === 'chiqish';
+    });
+
     logoutLinks.forEach(link => {
       link.addEventListener('click', (e) => {
-        // agar link sahifani o'zgartirmasin deb xohlasangiz e.preventDefault(); qo'shing
+        // logout bo'lsa flagni o'chiramiz va overlay ni ko'rsatamiz
         localStorage.removeItem(STORAGE_KEY);
-        // keyin sahifani yangilash yoki login oynasini ko'rsatish:
         if (overlay) {
           overlay.style.display = 'flex';
           if (pw) pw.focus();
-        } else {
-          // overlay bo'lmasa, sahifani qayta yuklash orqali login ketishini qayta tiklash mumkin
-          // location.reload();
         }
+        // agar link boshqa sahifaga olib ketmasligini xohlasangiz e.preventDefault();
+        // e.g. e.preventDefault();
       });
     });
 
-    // Agar boshqa sahifalarga o'tilganda ham flagni tekshirish kerak bo'lsa,
-    // shu skriptni har bir sahifaga (masalan non.html, ovqatlar.html va h.k.) qo'shing.
+    // Eslatma: agar sizda bir nechta sahifa bo'lsa (non.html, salatlar.html),
+    // shu skriptni har bir sahifaga qo'shing yoki uni tashqi login.js qilib include qiling.
   })();
+  localStorage.removeItem('adminLoggedIn_v1');
+
+  
+
 </script>
 
 </body>
 </html>
+

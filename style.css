@@ -379,8 +379,17 @@ body{
     display: none;
   }
 }
-/* === Responsivlik (telefonlar uchun) === */
+/* === Telefonda ko‘rinish uchun qo‘shimcha === */
 @media (max-width: 768px) {
+  header h1 {
+    display: none; /* telefonda yashiradi */
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+
   .sidebar {
     transform: translateX(-260px);
   }
@@ -391,31 +400,39 @@ body{
 
   .menu-btn {
     display: block;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--accent);
   }
 
-  .main-content {
-    margin-left: 0;
-    padding: 20px;
-  }
-
-  header h1 {
-    display: none; /* telefonda “Xush kelibsiz, Admin!” yashirinadi */
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   header input {
-    width: 150px;
-    font-size: 13px;
-  }
-
-  .form-section {
-    padding: 20px;
-  }
-
-  .card h3 {
-    font-size: 16px;
-  }
-
-  .card p {
+    width: 160px;
     font-size: 14px;
+  }
+
+  /* Sidebarni tashqariga bosganda yopish */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    z-index: 500;
+  }
+
+  .sidebar.active + .main-content::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 500;
   }
 }
