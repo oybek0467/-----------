@@ -4,16 +4,255 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restoran Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #00b4ff, #0077ff);
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* === Sidebar === */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(180deg, #00b4ff, #0077ff);
+      color: white;
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar.active {
+      transform: translateX(-260px);
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      margin: 15px 0;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar ul li a:hover {
+      color: #dff6ff;
+    }
+
+    /* === Main content === */
+    .main-content {
+      margin-left: 270px;
+      flex: 1;
+      padding: 30px;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* ✅ Header oq fonli box ichida */
+    header {
+      background: white;
+      padding: 20px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #333;
+    }
+
+    header input {
+      padding: 10px 15px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      width: 200px;
+    }
+
+    .menu-btn {
+      font-size: 22px;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* === Form === */
+    .form-section {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .form-section h2 {
+      text-align: center;
+      color: #0077ff;
+      margin-bottom: 20px;
+    }
+
+    .add-form label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .add-form input, .add-form select, .add-form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+
+    .add-form button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #0077ff;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .add-form button:hover {
+      background: #005ed1;
+    }
+
+    /* === Cards === */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      color: #0077ff;
+      margin-bottom: 10px;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* === Login Overlay === */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #loginOverlay .login-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #loginOverlay input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    #loginOverlay button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+
+    #loginOverlay button:hover {
+      background: #2980b9;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-260px);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .menu-btn {
+        display: block;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      header input {
+        width: 120px;
+      }
+    }
+  </style>
 </head>
 <body>
+
   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <h2><i class="fa-solid fa-utensils"></i> Restoran Panel</h2>
       <ul>
-        <li><a href="./index.html"><i class="fa-solid fa-house"></i> Bosh sahifa</a></li>
+        <li><a href="#"><i class="fa-solid fa-house"></i> Bosh sahifa</a></li>
         <li><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a></li>
       </ul>
     </aside>
@@ -21,9 +260,7 @@
     <!-- Main content -->
     <main class="main-content">
       <header>
-        <div class="menu-btn" id="menuBtn">
-          <i class="fa-solid fa-bars"></i>
-        </div>
+        <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
         <h1>Xush kelibsiz, Admin!</h1>
         <input type="text" placeholder=" Qidiruv...">
       </header>
@@ -53,7 +290,7 @@
           <textarea placeholder="Qo‘l bilan tayyorlangan mazali lag‘mon..." rows="3"></textarea>
 
           <label>Rasm URL:</label>
-          <input type="url" placeholder="https://...jpg">
+          <input type="file" name="image" placeholder="https://...jpg">
 
           <button type="submit"><i class="fa-solid fa-plus"></i> Qo‘shish</button>
         </form>
@@ -61,53 +298,108 @@
 
       <!-- Statistikalar -->
       <section class="cards">
-        
-        <div class="card">
-            <a href="./ovqatlar.html">
-          <h3><i class="fa-solid fa-bowl-food"></i> Ovqatlar</h3>
-          <p>45 ta</p>
-        </a>
-        </div>
-        <div class="card">
-            <a href="./ichimlik.html">
-          <h3><i class="fa-solid fa-mug-hot"></i> Ichimliklar</h3>
-          <p>30 ta</p>
-        </a>
-        </div>
-        <div class="card">
-            <a href="./pishiriqlar.html">
-          <h3><i class="fa-solid fa-cake-candles"></i> Pishiriqlar</h3>
-          <p>20 ta</p>
-         </a>
-        </div>
-           
-        <div class="card">
-            <a href="./salatlar.html">
-          <h3><i class="fa-solid fa-leaf"></i> Salatlar</h3>
-          <p>15 ta</p>
-        </a>
-        </div>
-            
-        
-            
-        <div class="card">
-            <a href="./ichkilik.html">
-          <h3><i class="fa-solid fa-wine-bottle"></i>spirtli ichimliklar</h3>
-          <p>15 ta</p>
-        </a>
-        </div>
-        <div class="card">
-            <a href="./non.html">
-          <h3><i class=" fa-solid fa-bread-slice"></i>Non,Choy</h3>
-          <p>15 ta</p>
-        </a>
-        </div>
-            
+        <div class="card"><a href="./ovqatlar.html"><h3><i class="fa-solid fa-bowl-food"></i> Ovqatlar</h3><p>45 ta</p></a></div>
+        <div class="card"><a href="./ichimlik.html"><h3><i class="fa-solid fa-mug-hot"></i> Ichimliklar</h3><p>30 ta</p></a></div>
+        <div class="card"><a href="./pishiriqlar.html"><h3><i class="fa-solid fa-cake-candles"></i> Pishiriqlar</h3><p>20 ta</p></a></div>
+        <div class="card"><a href="./salatlar.html"><h3><i class="fa-solid fa-leaf"></i> Salatlar</h3><p>15 ta</p></a></div>
+        <div class="card"><a href="./non.html"><h3><i class="fa-solid fa-bread-slice"></i> Non, Choy</h3><p>15 ta</p></a></div>
       </section>
     </main>
   </div>
 
- 
+  <!-- Login Overlay -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2>Admin Panelga kirish</h2>
+      <input id="loginPassword" type="password" placeholder="Parolni kiriting">
+      <button id="loginSubmit">Kirish</button>
+      <p id="loginError" style="color:#e74c3c; margin-top:10px; min-height:18px;"></p>
+    </div>
+  </div>
+
+  <script>
+    // Sidebar ochib-yopish
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+   
+  </script>
+  <script>
+  (function(){
+    // Qaysi saqlash turini ishlatamiz:
+    // - sessionStorage: brauzer oynasi yopilganda flag yo'qoladi
+    // - localStorage: uzoq muddat saqlanadi (yopib ochganda ham qoladi)
+    // Bu yerda localStorage ishlatamiz:
+    const STORAGE_KEY = 'adminLoggedIn_v1';
+
+    // DOM elementlar (agar mavjud bo'lsa)
+    const overlay = document.getElementById('loginOverlay'); // agar overlay bor bo'lsa
+    const pw = document.getElementById('loginPassword');     // parol input (agar bor bo'lsa)
+    const btn = document.getElementById('loginSubmit');      // kirish tugmasi (agar bor bo'lsa)
+    const err = document.getElementById('loginError');       // xato maydoni (agar bor bo'lsa)
+    const correct = 'admin'; // parol (siz xohlasangiz o'zgartiring)
+
+    // Agar localStorage da flag bo'lsa — overlay ni yashiramiz (agar overlay mavjud bo'lsa)
+    if (localStorage.getItem(STORAGE_KEY) === '1') {
+      if (overlay) overlay.style.display = 'none';
+    } else {
+      // Agar flag yo'q va overlay mavjud bo'lsa, fokusni inputga qo'yish
+      if (overlay && pw) {
+        window.addEventListener('load', () => pw.focus());
+      }
+    }
+
+    // Agar login elementlari mavjud bo'lsa — login funktsiyasini bog'laymiz
+    if (btn && pw) {
+      // Enter bilan kirish
+      pw.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') btn.click();
+      });
+
+      btn.addEventListener('click', () => {
+        if (pw.value === correct) {
+          // Muvaffaqiyatli kirish — flag o'rnatamiz va overlay ni yashiramiz
+          localStorage.setItem(STORAGE_KEY, '1');
+          if (overlay) overlay.style.display = 'none';
+        } else {
+          if (err) err.textContent = '❌ Parol notoʻgʻri. Qaytadan urinib koʻring.';
+          pw.value = '';
+          pw.focus();
+        }
+      });
+    }
+
+    // --- OPTIONAL: Logout tugmasi yasalishi ---
+    // Agar sahifada "Chiqish" linki mavjud bo'lsa (masalan sidebar da), unga logout funksiyasini ulang:
+    const logoutLinks = document.querySelectorAll('a.logout, a[data-logout]');
+    logoutLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        // agar link sahifani o'zgartirmasin deb xohlasangiz e.preventDefault(); qo'shing
+        localStorage.removeItem(STORAGE_KEY);
+        // keyin sahifani yangilash yoki login oynasini ko'rsatish:
+        if (overlay) {
+          overlay.style.display = 'flex';
+          if (pw) pw.focus();
+        } else {
+          // overlay bo'lmasa, sahifani qayta yuklash orqali login ketishini qayta tiklash mumkin
+          // location.reload();
+        }
+      });
+    });
+
+    // Agar boshqa sahifalarga o'tilganda ham flagni tekshirish kerak bo'lsa,
+    // shu skriptni har bir sahifaga (masalan non.html, ovqatlar.html va h.k.) qo'shing.
+  })();
+</script>
+
 </body>
 </html>
-
