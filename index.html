@@ -71,7 +71,6 @@
       transition: margin-left 0.3s ease;
     }
 
-    /* ✅ Header oq fonli box ichida */
     header {
       background: white;
       padding: 20px 25px;
@@ -225,7 +224,6 @@
       to {opacity: 1; transform: scale(1);}
     }
 
-    /* === Responsive === */
     @media (max-width: 768px) {
       .sidebar {
         transform: translateX(-260px);
@@ -262,15 +260,15 @@
       <header>
         <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
         <h1>Xush kelibsiz, Admin!</h1>
-        <input type="text" placeholder=" Qidiruv...">
+        <input id="searchInput" type="text" placeholder=" Qidiruv...">
       </header>
 
-      <!-- Form -->
+      <!-- ✅ Narsa qo‘shadigan joy -->
       <section class="form-section">
         <h2>Yangi Mahsulot Qo‘shish</h2>
-        <form class="add-form">
+        <form class="add-form" id="addForm">
           <label>Kategoriya:</label>
-          <select required>
+          <select id="kategoriya" required>
             <option value="">Tanlang...</option>
             <option>Ovqat</option>
             <option>Ichimlik</option>
@@ -281,23 +279,23 @@
           </select>
 
           <label>Nom:</label>
-          <input type="text" placeholder="Masalan: Lag‘mon" required>
+          <input id="nom" type="text" placeholder="Masalan: Lag‘mon" required>
 
           <label>Narxi (so‘m):</label>
-          <input type="number" placeholder="25000" required>
+          <input id="narx" type="number" placeholder="25000" required>
 
           <label>Tavsif:</label>
-          <textarea placeholder="Qo‘l bilan tayyorlangan mazali lag‘mon..." rows="3"></textarea>
+          <textarea id="tavsif" placeholder="Qo‘l bilan tayyorlangan mazali lag‘mon..." rows="3"></textarea>
 
           <label>Rasm URL:</label>
-          <input type="file" name="image" placeholder="https://...jpg">
+          <input id="rasm" type="file" name="image">
 
           <button type="submit"><i class="fa-solid fa-plus"></i> Qo‘shish</button>
         </form>
       </section>
 
-      <!-- Statistikalar -->
-      <section class="cards">
+      <!-- Kartalar -->
+      <section class="cards" id="cardsContainer">
         <div class="card"><a href="./ovqatlar.html"><h3><i class="fa-solid fa-bowl-food"></i> Ovqatlar</h3><p>45 ta</p></a></div>
         <div class="card"><a href="./ichimlik.html"><h3><i class="fa-solid fa-mug-hot"></i> Ichimliklar</h3><p>30 ta</p></a></div>
         <div class="card"><a href="./pishiriqlar.html"><h3><i class="fa-solid fa-cake-candles"></i> Pishiriqlar</h3><p>20 ta</p></a></div>
@@ -308,96 +306,80 @@
   </div>
 
   <!-- Login Overlay -->
-<div id="loginOverlay">
-  <div class="login-box">
-    <h2>Admin Panelga kirish</h2>
-    <input id="loginName" type="text" placeholder="Loginni kiriting">
-    <input id="loginPassword" type="password" placeholder="Parolni kiriting">
-    <button id="loginSubmit">Kirish</button>
-    <p id="loginError" style="color:#e74c3c; margin-top:10px; min-height:18px;"></p>
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2>Admin Panelga kirish</h2>
+      <input id="loginName" type="text" placeholder="Loginni kiriting">
+      <input id="loginPassword" type="password" placeholder="Parolni kiriting">
+      <button id="loginSubmit">Kirish</button>
+      <p id="loginError" style="color:#e74c3c; margin-top:10px; min-height:18px;"></p>
+    </div>
   </div>
-</div>
-
 
   <script>
-    // Sidebar ochib-yopish
+    // === Sidebar ochib-yopish ===
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
     if (menuBtn && sidebar) {
       menuBtn.addEventListener('click', () => {
         sidebar.classList.toggle('active');
       });
-
       document.addEventListener('click', (e) => {
         if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
           sidebar.classList.remove('active');
         }
       });
     }
+
+    // === Qidiruv funksiyasi ===
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.card');
+    searchInput.addEventListener('input', () => {
+      const value = searchInput.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(value) || value === '' ? 'block' : 'none';
+      });
+    });
+
+    // === Login tizimi ===
+    (function(){
+      const STORAGE_KEY = 'adminSession_v1';
+      const overlay = document.getElementById('loginOverlay');
+      const nameInput = document.getElementById('loginName');
+      const pwInput = document.getElementById('loginPassword');
+      const btn = document.getElementById('loginSubmit');
+      const err = document.getElementById('loginError');
+      const correctLogin = 'oybek';
+      const correctPassword = 'admin';
+
+      if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+        overlay.style.display = 'none';
+      } else {
+        overlay.style.display = 'flex';
+        nameInput.focus();
+      }
+
+      btn.addEventListener('click', () => {
+        const login = nameInput.value.trim().toLowerCase();
+        const pass = pwInput.value.trim();
+        if (login === correctLogin && pass === correctPassword) {
+          sessionStorage.setItem(STORAGE_KEY, '1');
+          overlay.style.display = 'none';
+        } else {
+          err.textContent = '❌ Login yoki parol noto‘g‘ri.';
+          pwInput.value = '';
+          pwInput.focus();
+        }
+      });
+
+      [nameInput, pwInput].forEach(input => {
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter') btn.click();
+        });
+      });
+    })();
   </script>
-
-<script>
-(function(){
-  const STORAGE_KEY = 'adminSession_v1';
-  const overlay = document.getElementById('loginOverlay');
-  const nameInput = document.getElementById('loginName');
-  const pwInput = document.getElementById('loginPassword');
-  const btn = document.getElementById('loginSubmit');
-  const err = document.getElementById('loginError');
-
-  const correctLogin = 'oybek';
-  const correctPassword = 'admin';
-
-  // Agar sessiyada login mavjud bo'lsa, kirish oynasini yashiramiz
-  if (sessionStorage.getItem(STORAGE_KEY) === '1') {
-    overlay.style.display = 'none';
-  } else {
-    overlay.style.display = 'flex';
-    nameInput.focus();
-  }
-
-  // Kirish tugmasi bosilganda
-  btn.addEventListener('click', () => {
-    const login = nameInput.value.trim().toLowerCase();
-    const pass = pwInput.value.trim();
-
-    if (login === correctLogin && pass === correctPassword) {
-      sessionStorage.setItem(STORAGE_KEY, '1');
-      overlay.style.display = 'none';
-    } else {
-      err.textContent = '❌ Login yoki parol noto‘g‘ri.';
-      pwInput.value = '';
-      pwInput.focus();
-    }
-  });
-
-  // Enter bilan kirish
-  [nameInput, pwInput].forEach(input => {
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') btn.click();
-    });
-  });
-
-  // Logout funksiyasi (chiqish tugmasi uchun)
-  const logoutLinks = document.querySelectorAll('a.logout, a[data-logout]');
-  logoutLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      sessionStorage.removeItem(STORAGE_KEY);
-      overlay.style.display = 'flex';
-      nameInput.value = '';
-      pwInput.value = '';
-      err.textContent = '';
-      nameInput.focus();
-    });
-  });
-})();
-</script>
-
-
-  
-  
-
-</script>
 
 </body>
 </html>
