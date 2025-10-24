@@ -338,7 +338,7 @@
 
 <script>
 (function(){
-  const STORAGE_KEY = 'adminLoggedIn_v2';
+  const STORAGE_KEY = 'adminSession_v1';
   const overlay = document.getElementById('loginOverlay');
   const nameInput = document.getElementById('loginName');
   const pwInput = document.getElementById('loginPassword');
@@ -348,10 +348,11 @@
   const correctLogin = 'oybek';
   const correctPassword = 'admin';
 
-  // Agar allaqachon login qilingan bo'lsa, overlay yashirin
-  if (localStorage.getItem(STORAGE_KEY) === '1') {
+  // Agar sessiyada login mavjud bo'lsa, kirish oynasini yashiramiz
+  if (sessionStorage.getItem(STORAGE_KEY) === '1') {
     overlay.style.display = 'none';
   } else {
+    overlay.style.display = 'flex';
     nameInput.focus();
   }
 
@@ -361,7 +362,7 @@
     const pass = pwInput.value.trim();
 
     if (login === correctLogin && pass === correctPassword) {
-      localStorage.setItem(STORAGE_KEY, '1');
+      sessionStorage.setItem(STORAGE_KEY, '1');
       overlay.style.display = 'none';
     } else {
       err.textContent = '❌ Login yoki parol noto‘g‘ri.';
@@ -381,7 +382,7 @@
   const logoutLinks = document.querySelectorAll('a.logout, a[data-logout]');
   logoutLinks.forEach(link => {
     link.addEventListener('click', () => {
-      localStorage.removeItem(STORAGE_KEY);
+      sessionStorage.removeItem(STORAGE_KEY);
       overlay.style.display = 'flex';
       nameInput.value = '';
       pwInput.value = '';
@@ -391,6 +392,7 @@
   });
 })();
 </script>
+
 
   
   
